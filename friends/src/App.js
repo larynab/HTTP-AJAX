@@ -1,7 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import Friends from './friends/Friends';
 import './App.css';
+
 
 class App extends React.Component {
 

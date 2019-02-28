@@ -1,32 +1,53 @@
 import React from 'react';
 
-const FriendCard = props => {
+class FriendCard extends React.Component {
+    state = {
+        friend: {
+            name: '',
+            age: '',
+            email: ''
+        }
+    }
+    handleChanges = ev => {
+        ev.persist();
+        this.setState(prevState => ({
+            friend: {
+                ...prevState.friend,
+                [ev.target.name]: ev.target.value
+            }
+        }));
+    }
+    render() {
     return (
-        <form onSubmit={props.addFriend}>
+        <form onSubmit={e => this.props.addItem(e, this.state.friend)}>
             <input
                 type="text"
-                value={props.name}
+                value={this.state.friend.name}
                 name="name"
-                onChange={props.handleChanges}
+                onChange={this.handleChanges}
                 placeholder="name"
             />
             <input
                 type="number"
-                value={props.age}
-                onChange={props.handleChanges}
+                value={this.state.friend.age}
+                onChange={this.handleChanges}
                 name="age"
                 placeholder="age"
             />
             <input
                 type="text"
-                value={props.email}
-                onChange={props.handleChanges}
+                value={this.state.friend.email}
+                onChange={this.handleChanges}
                 name="email"
                 placeholder="email"
             />
-            <button type="submit">Save</button>
+          <button className="md-button form-button">Add Item</button>
         </form>
     );
+    };
 }
 
 export default FriendCard;
+
+// onSubmit={this.addFriend}
+//             <button type="submit">Save</button>
