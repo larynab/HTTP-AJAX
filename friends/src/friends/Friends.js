@@ -3,7 +3,7 @@ import axios from 'axios';
 
 import Afriend from './Afriend';
 import FriendCard from './FriendCard'
-import { BrowserRouter as Router, Route, NavLink } from "react-router-dom";
+import {Route, NavLink } from "react-router-dom";
 
 export default class Friends extends React.Component {
     constructor() {
@@ -12,6 +12,7 @@ export default class Friends extends React.Component {
             friends: []
         }
     }
+    
     componentDidMount() {
         axios.get('http://localhost:5000/friends')
         .then(res => {
@@ -19,17 +20,43 @@ export default class Friends extends React.Component {
         })    
         .catch(err => console.log(err))
     }
+    
     addItem = (e, friend) => {
-    e.preventDefault();
-    axios
-      .post('http://localhost:5000/friends', friend)
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
+        e.preventDefault();
+        axios.post('http://localhost:5000/friends', friend)
+        .then(res => {console.log(res);this.props.history.push('/friend-card');})
+        .catch(err => {console.log(err);});
+    };
+
+    deleteItem = (e, id) => {
+        e.preventDefault();
+        axios.delete(`http://localhost:5000/friends/${id}`) 
+        .then(res => {this.setState({friends: res.data});this.props.history.push('/friend-card');})
+        .catch(err => {console.log(err);}) 
+    };
+
+    
+
+    render() {
+
+        return (
+            <div>
+                <nav>
+                    <div className="nav-links">
+\
+                    </div>
+                </nav>
+                <div>
+                    {this.state.friends.map(friends => (
+                    <Afriend key={friends.id} friends={friends} deleteItem={this.deleteItem} />
+                    ))}
+                </div>
+                <Route path="/friend-card" render={props => <FriendCard {...props} addItem={this.addItem} />} />
+            </div>
+        );
+    }
+}
+//old-------------------------------------------------
     // addFriend = e => {
     //     e.preventDefault();
     //     console.log(e.target);
@@ -53,23 +80,4 @@ export default class Friends extends React.Component {
     //     });
     // };
 
-    render() {
-
-        return (
-            <div>
-        <nav>
-          <div className="nav-links">
-            <NavLink to="/friend-card">Friends</NavLink>
-          </div>
-        </nav>
-                <div>
-                    {this.state.friends.map(friends => (
-                    <Afriend key={friends.id} friends={friends} />
-                    ))}
-                </div>
-                <Route path="/friend-card" render={props => <FriendCard {...props} addItem={this.addItem} />} />
-            </div>
-        );
-    }
-}
 
